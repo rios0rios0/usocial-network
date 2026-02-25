@@ -4,6 +4,8 @@
         <img src="https://img.shields.io/github/release/rios0rios0/usocial-network.svg?style=for-the-badge&logo=github" alt="Latest Release"/></a>
     <a href="https://github.com/rios0rios0/usocial-network/blob/main/LICENSE">
         <img src="https://img.shields.io/github/license/rios0rios0/usocial-network.svg?style=for-the-badge&logo=github" alt="License"/></a>
+    <a href="https://github.com/rios0rios0/usocial-network/actions/workflows/default.yaml">
+        <img src="https://img.shields.io/github/actions/workflow/status/rios0rios0/usocial-network/default.yaml?branch=main&style=for-the-badge&logo=github" alt="Build Status"/></a>
 </p>
 
 An unknown social network application built with PHP **7.2**, leveraging modern language features such as Object Type Hint, Abstract Function Override, and others.
