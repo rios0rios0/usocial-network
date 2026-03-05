@@ -12,9 +12,10 @@ if ($session->logged()) {
 	//
 	if (($html_text !== "") && ($url_image !== "")) {
 		$id_user = $session->user->id;
-		$html_text = addslashes(str_replace('"', "'", $html_text));
-		$sql = "INSERT INTO post (id_user, html_text, photo) VALUES ($id_user, '$html_text', '$url_image')";
-		$query = $conn->query($sql);
+		$html_text = str_replace('"', "'", $html_text);
+		$sql = "INSERT INTO post (id_user, html_text, photo) VALUES (:id_user, :html_text, :url_image)";
+		$query = $conn->prepare($sql);
+		$query->execute(array(':id_user' => $id_user, ':html_text' => $html_text, ':url_image' => $url_image));
 		if ($query->rowCount() > 0) {
 			$out["message"] = "Successful inserted post.";
 		} else {

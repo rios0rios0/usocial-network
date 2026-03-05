@@ -10,8 +10,9 @@ if ($session->logged()) {
 	$id = isset($_POST["id"]) ? $_POST["id"] : "";
 	//
 	if ($id !== "") {
-		$sql = "INSERT INTO friend (id_user_requested, id_user_accepted) VALUES (" . $session->user->id . ", $id)";
-		$query = $conn->query($sql);
+		$sql = "INSERT INTO friend (id_user_requested, id_user_accepted) VALUES (:id_requester, :id_accepted)";
+		$query = $conn->prepare($sql);
+		$query->execute(array(':id_requester' => $session->user->id, ':id_accepted' => $id));
 		if ($query->rowCount() > 0) {
 			$out["message"] = "Successful invited.";
 		} else {

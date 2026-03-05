@@ -10,8 +10,9 @@ if ($session->logged()) {
 	$id_post = isset($_POST["id"]) ? $_POST["id"] : "";
 	//
 	if ($id_post !== "") {
-		$sql = "DELETE P FROM post AS P WHERE P.id = $id_post";
-		$query = $conn->query($sql);
+		$sql = "DELETE P FROM post AS P WHERE P.id = :id_post";
+		$query = $conn->prepare($sql);
+		$query->execute(array(':id_post' => $id_post));
 		if ($query->rowCount() > 0) {
 			$out["message"] = "Successful deleted post.";
 		} else {

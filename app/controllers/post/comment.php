@@ -14,8 +14,9 @@ if ($session->logged()) {
 	if (($id_post !== "") && ($html_text !== "")) {
 		$id_user = $session->user->id;
 		$html_text = base64_encode(utf8_decode(str_replace('"', "'", $html_text)));
-		$sql = "INSERT INTO comment (id_user, id_post, html_text) VALUES ($id_user, $id_post, '$html_text')";
-		$query = $conn->query($sql);
+		$sql = "INSERT INTO comment (id_user, id_post, html_text) VALUES (:id_user, :id_post, :html_text)";
+		$query = $conn->prepare($sql);
+		$query->execute(array(':id_user' => $id_user, ':id_post' => $id_post, ':html_text' => $html_text));
 		if ($query->rowCount() > 0) {
 			$user_service = new UserService();
 			$user = $user_service->get($id_user);

@@ -23,10 +23,11 @@ if ($session->logged()) {
 			$user_service = new UserService();
 			if ($photo === $user_service->get_photo($photo)) {
 				$username = trim(strtolower($firstName . $lastName)) . rand(0, 100);
-				$sql = "INSERT INTO user (username, password, email, photo) VALUES ('$username', '$password', '$email', '$photo')";
-				$query = $conn->query($sql);
+				$sql = "INSERT INTO user (username, password, email, photo) VALUES (:username, :password, :email, :photo)";
+				$query = $conn->prepare($sql);
+				$query->execute(array(':username' => $username, ':password' => $password, ':email' => $email, ':photo' => $photo));
 				if ($query->rowCount() > 0) {
-					$out["message"] = "Sign Up successful. Your username is <strong>$username</strong>.";
+					$out["message"] = "Sign Up successful. Your username is <strong>" . htmlspecialchars($username, ENT_QUOTES, 'UTF-8') . "</strong>.";
 				} else {
 					$out["error"] = true;
 					$out["message"] = "Sign Up failed. Database error, contact administrator...";

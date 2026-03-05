@@ -19,8 +19,9 @@ if ($session->logged()) {
 		$out["error"] = true;
 		$out["message"] = "Password is required.";
 	} else {
-		$sql = "SELECT U.id, U.username FROM user AS U WHERE U.username='$username' AND U.password='$password'";
-		$query = $conn->query($sql);
+		$sql = "SELECT U.id, U.username FROM user AS U WHERE U.username=:username AND U.password=:password";
+		$query = $conn->prepare($sql);
+		$query->execute(array(':username' => $username, ':password' => $password));
 		if ($query->rowCount() > 0) {
 			$session->user = $query->fetchObject();
 			$session->logged_user = true;

@@ -13,13 +13,16 @@ if ($session->logged()) {
 	if (($id02 !== "") && ($accepted !== "")) {
 		$id01 = $session->user->id;
 		if (intval($accepted) === 0) {
-			$sql = "DELETE F FROM friend AS F 
-					WHERE (F.id_user_accepted = $id01 AND F.id_user_requested = $id02)";
+			$sql = "DELETE F FROM friend AS F
+					WHERE (F.id_user_accepted = :id01 AND F.id_user_requested = :id02)";
+			$query = $conn->prepare($sql);
+			$query->execute(array(':id01' => $id01, ':id02' => $id02));
 		} else {
-			$sql = "UPDATE friend AS F SET F.accepted = $accepted
-            		WHERE (F.id_user_accepted = $id01 AND F.id_user_requested = $id02)";
+			$sql = "UPDATE friend AS F SET F.accepted = :accepted
+            		WHERE (F.id_user_accepted = :id01 AND F.id_user_requested = :id02)";
+			$query = $conn->prepare($sql);
+			$query->execute(array(':accepted' => $accepted, ':id01' => $id01, ':id02' => $id02));
 		}
-		$query = $conn->query($sql);
 		if ($query->rowCount() > 0) {
 			$out["id"] = $id02;
 			$out["message"] = "Successful updated friendship.";
