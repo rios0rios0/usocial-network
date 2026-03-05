@@ -10,15 +10,16 @@ if ($session->logged()) {
 	$conn = DatabaseConnection::getInstance();
 	$out = array("error" => false);
 	//
-	$id = isset($_GET["id"]) ? $_GET["id"] : "";
-	$id = (($id !== "") ? $id : $session->user->id);
+	$id = isset($_GET["id"]) ? intval($_GET["id"]) : 0;
+	$id = (($id !== 0) ? $id : $session->user->id);
 	$photo = isset($_POST["photo"]) ? $_POST["photo"] : "";
 	//
 	$user_service = new UserService();
 	if ($photo !== "") {
 		if ($photo === $user_service->get_photo($photo)) {
-			$sql = "UPDATE user AS U SET U.photo = '$photo' WHERE U.id = " . $session->user->id;
-			$query = $conn->query($sql);
+			$sql = "UPDATE user AS U SET U.photo = :photo WHERE U.id = :id";
+			$query = $conn->prepare($sql);
+			$query->execute(array(':photo' => $photo, ':id' => $session->user->id));
 			if ($query->rowCount() > 0) {
 				DatabaseConnection::close();
 				RoutesManagement::redirect("/app/controllers/user/index.php");
