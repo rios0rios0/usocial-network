@@ -16,6 +16,9 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-03-11
+
 ### Added
 
 - added GitHub Actions workflow for CI/CD pipeline
+
