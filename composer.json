@@ -1,0 +1,16 @@
+{
+    "name": "rios0rios0/usocial-network",
+    "description": "Social network built with PHP 7.2 featuring object type hints",
+    "type": "project",
+    "license": "GPL-3.0-only",
+    "require": {
+        "php": ">=7.2"
+    },
+    "scripts": {
+        "lint": "find . -name '*.php' -not -path './vendor/*' -print0 | xargs -0 -n1 php -l",
+        "test": "echo 'No tests defined' && exit 0"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

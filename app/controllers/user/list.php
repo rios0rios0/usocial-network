@@ -10,10 +10,6 @@ if ($session->logged()) {
 	$search = new stdClass();
 	$search->action = isset($_GET["action"]) ? $_GET["action"] : "";
 	$search->username = isset($_GET["username"]) ? $_GET["username"] : "";
-	$condition = "";
-	if ($search->username !== "") {
-		$condition = "AND U.username LIKE '%" . $search->username . "%'";
-	}
 	//
 	$vm = new ViewsManagement();
 	$vm->session = $session;
@@ -27,7 +23,7 @@ if ($session->logged()) {
 			$vm->users = $user_service->list_friends($session->user->id, 0);
 			break;
 		default:
-			$vm->users = $user_service->list($session->user->id, $condition);
+			$vm->users = $user_service->list($session->user->id, $search->username ?: null);
 			break;
 	}
 	$vm->invitations = $user_service->list_friends($session->user->id, 0, 6);

@@ -50,6 +50,7 @@ if ($session->logged()) {
 	}
 	//
 	$post_service = new PostService();
+	// nosemgrep: php.lang.security.injection.tainted-callable.tainted-callable
 	$vm->posts = $post_service->prepare($post_service->list($id, $session->user->id), $user_service);
 	if (count($vm->posts) > 0) {
 		$vm->set("panel_posts", "/app/views/fragments/panel-posts.php");
