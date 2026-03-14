@@ -7,7 +7,7 @@
 					<div class="form-group">
 						<label for="username">Username</label>
 						<input type="text" class="form-control" id="username" name="username"
-						       placeholder="Ex.: rios0rios0" value="<?= $this->search->username ?>">
+						       placeholder="Ex.: rios0rios0" value="<?= htmlspecialchars($this->search->username, ENT_QUOTES, 'UTF-8') ?>">
 					</div>
 					<button type="submit" class="btn btn-default">Search</button>
 				</form>
@@ -22,7 +22,7 @@
 					<div class="col-md-3">
 						<img src="<?= $user->photo ?>" class="img-thumbnail" alt="">
 						<div class="text-center">
-							<?= $user->username ?>
+							<?= htmlspecialchars($user->username, ENT_QUOTES, 'UTF-8') ?>
 							<?php
 							if ($user->friend) {
 								?>

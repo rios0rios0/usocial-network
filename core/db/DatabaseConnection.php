@@ -8,10 +8,10 @@
 
 class DatabaseConnection
 {
-	private static $db = "usocial";
-	private static $host = "localhost";
-	private static $user = "root";
-	private static $password = "1q2w!Q@W";
+	private static $db;
+	private static $host;
+	private static $user;
+	private static $password;
 	private static $connection;
 
 	public function __construct()
@@ -22,6 +22,10 @@ class DatabaseConnection
 	{
 		try {
 			if (is_null(self::$connection)) {
+				self::$db = getenv('DB_NAME') ?: 'usocial';
+				self::$host = getenv('DB_HOST') ?: 'localhost';
+				self::$user = getenv('DB_USER') ?: 'root';
+				self::$password = getenv('DB_PASSWORD') ?: '';
 				self::$connection = new PDO("mysql:host=" . self::$host . ";dbname=" . self::$db, self::$user, self::$password);
 				self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 			}

@@ -27,11 +27,11 @@ class ViewsManagement
 	public function set($fragment, $path)
 	{
 		$abs = $this->root . $path;
-		if (file_exists($abs)) {
-			$this->$fragment = $abs;
-		} else {
-			throw new Exception("No layout file present in path " . $abs);
+		$real = realpath($abs);
+		if ($real === false || strpos($real, $this->root) !== 0) {
+			throw new Exception("Invalid path: " . $path);
 		}
+		$this->$fragment = $real;
 	}
 
 	public function render()
