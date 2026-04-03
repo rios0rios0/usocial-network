@@ -16,4 +16,4 @@ permissions:
 
 jobs:
   default:
-    uses: 'rios0rios0/pipelines/.github/workflows/php.yaml@main'
+    uses: 'rios0rios0/pipelines/.github/workflows/composer.yaml@main'

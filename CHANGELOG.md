@@ -16,6 +16,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Fixed
+
+- fixed CI workflow reference after pipelines `v4.0.0` renamed `php.yaml` to `composer.yaml`
+
 ## [0.1.0] - 2026-03-12
 
 ### Added
