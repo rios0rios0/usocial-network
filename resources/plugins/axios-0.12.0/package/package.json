@@ -73,6 +73,6 @@
     "definition": "./axios.d.ts"
   },
   "dependencies": {
-    "follow-redirects": "1.15.6"
+    "follow-redirects": "1.16.0"
   }
 }
