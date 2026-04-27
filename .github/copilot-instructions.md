@@ -10,9 +10,9 @@ USocial Network is a social networking application built with PHP 7.2+. It demon
 usocial-network/
 ├── .github/
 │   └── workflows/
-│       └── default.yaml        # CI/CD pipeline (delegates to shared php.yaml workflow)
+│       └── default.yaml        # CI/CD pipeline (delegates to shared composer.yaml workflow)
 ├── app/                        # Application layer (MVC)
-│   ├── controllers/            # Request handlers: HomeController, LoginController, PostController, UserController
+│   ├── controllers/            # Request handlers in subdirectories: home/, login/, post/, user/
 │   ├── services/               # Business logic: UserService, PostService
 │   └── views/                  # PHP templates: login, home, user views, layouts, fragments
 ├── core/                       # Core framework components
@@ -25,7 +25,7 @@ usocial-network/
 │   └── 2019051802_usocial.sql
 ├── resources/                  # Frontend static assets
 │   ├── images/
-│   ├── plugins/                # Bundled JS libraries: Vue.js 2.5.9, jQuery 1.11.2, Axios 0.12.0
+│   ├── plugins/                # Bundled libraries: Bootstrap, Font Awesome, Vue.js, jQuery, Axios
 │   ├── scripts/
 │   └── styles/
 ├── index.php                   # Entry point — bootstraps RoutesManagement
@@ -40,7 +40,8 @@ usocial-network/
 |---|---|
 | Language | PHP 7.2+ |
 | Database | MySQL (via PDO) |
-| Frontend | HTML5, Bootstrap CSS |
+| Frontend | HTML5 |
+| CSS Framework | Bootstrap 3.3.7, Font Awesome 4.7.0 |
 | JavaScript | Vue.js 2.5.9, jQuery 1.11.2, Axios 0.12.0 |
 | Web Server | Apache, Nginx, or PHP built-in server |
 | Package Manager | None — no Composer, no npm |
@@ -75,7 +76,7 @@ mysql -u root -p usocial < db/2019051801_usocial.sql
 mysql -u root -p usocial < db/2019051802_usocial.sql
 ```
 
-The default credentials used by the application are hardcoded in `core/db/DatabaseConnection.php` (`localhost` / `root` / `1q2w!Q@W`). Update them there for local development.
+Database credentials are configured via environment variables with fallback defaults in `core/db/DatabaseConnection.php`: `DB_HOST` (default `localhost`), `DB_USER` (default `root`), `DB_PASSWORD` (default empty), `DB_NAME` (default `usocial`). Set these env vars or edit the file for local development.
 
 ## Architecture and Design Patterns
 
@@ -93,13 +94,15 @@ All dependencies are bundled in the repository — there is no package manager t
 **PHP**: Built-in PDO with `pdo_mysql` driver (must be enabled in `php.ini`).
 
 **Bundled frontend libraries** (in `resources/plugins/`):
+- Bootstrap 3.3.7
+- Font Awesome 4.7.0
 - Vue.js 2.5.9
 - jQuery 1.11.2
 - Axios 0.12.0
 
 ## CI/CD Pipeline
 
-The pipeline is defined in `.github/workflows/default.yaml` and delegates to the shared reusable workflow at `rios0rios0/pipelines/.github/workflows/php.yaml@main`.
+The pipeline is defined in `.github/workflows/default.yaml` and delegates to the shared reusable workflow at `rios0rios0/pipelines/.github/workflows/composer.yaml@main`.
 
 Triggers:
 - Push to `main`
