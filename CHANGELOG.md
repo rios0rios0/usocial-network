@@ -16,6 +16,8 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-04-28
+
 ### Changed
 
 - refreshed `.github/copilot-instructions.md` to fix stale CI workflow reference (`php.yaml` → `composer.yaml`), correct database credential docs to reflect env-var configuration, and add missing bundled libraries (Bootstrap 3.3.7, Font Awesome 4.7.0)
