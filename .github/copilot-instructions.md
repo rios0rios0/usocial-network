@@ -10,7 +10,7 @@ USocial Network is a social networking application built with PHP 7.2+. It demon
 usocial-network/
 ├── .github/
 │   └── workflows/
-│       └── default.yaml        # CI/CD pipeline (delegates to shared composer.yaml workflow)
+│       └── default.yaml        # CI/CD pipeline (delegates to shared composer-library.yaml workflow)
 ├── app/                        # Application layer (MVC)
 │   ├── controllers/            # Request handlers in subdirectories: home/, login/, post/, user/
 │   ├── services/               # Business logic: UserService, PostService
@@ -102,7 +102,7 @@ All dependencies are bundled in the repository — there is no package manager t
 
 ## CI/CD Pipeline
 
-The pipeline is defined in `.github/workflows/default.yaml` and delegates to the shared reusable workflow at `rios0rios0/pipelines/.github/workflows/composer.yaml@main`.
+The pipeline is defined in `.github/workflows/default.yaml` and delegates to the shared reusable workflow at `rios0rios0/pipelines/.github/workflows/composer-library.yaml@main`.
 
 Triggers:
 - Push to `main`
