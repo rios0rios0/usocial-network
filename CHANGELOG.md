@@ -16,6 +16,14 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Added
+
+- added `CLAUDE.md` with build, architecture, convention, and CI guidance for Claude Code sessions
+
+### Changed
+
+- refreshed `.github/copilot-instructions.md` to fix stale CI workflow reference (`composer.yaml` → `composer-library.yaml`)
+
 ## [0.1.2] - 2026-04-28
 
 ### Changed
