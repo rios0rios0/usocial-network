@@ -102,7 +102,7 @@ All dependencies are bundled in the repository — there is no package manager t
 
 ## CI/CD Pipeline
 
-The pipeline is defined in `.github/workflows/default.yaml` and delegates to the shared reusable workflow at `rios0rios0/pipelines/.github/workflows/composer.yaml@main`.
+The pipeline is defined in `.github/workflows/default.yaml` and delegates to the shared reusable workflow at `rios0rios0/pipelines/.github/workflows/composer-library.yaml@main`.
 
 Triggers:
 - Push to `main`
