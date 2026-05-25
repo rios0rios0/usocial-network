@@ -16,6 +16,8 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-05-25
+
 ### Changed
 
 - refreshed `.github/copilot-instructions.md` to fix remaining stale CI workflow reference in directory tree (`composer.yaml` → `composer-library.yaml`)
