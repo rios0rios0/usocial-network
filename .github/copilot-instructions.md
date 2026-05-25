@@ -10,7 +10,7 @@ USocial Network is a social networking application built with PHP 7.2+. It demon
 usocial-network/
 ├── .github/
 │   └── workflows/
-│       └── default.yaml        # CI/CD pipeline (delegates to shared composer.yaml workflow)
+│       └── default.yaml        # CI/CD pipeline (delegates to shared composer-library.yaml workflow)
 ├── app/                        # Application layer (MVC)
 │   ├── controllers/            # Request handlers in subdirectories: home/, login/, post/, user/
 │   ├── services/               # Business logic: UserService, PostService
