@@ -29,6 +29,8 @@ usocial-network/
 │   ├── scripts/
 │   └── styles/
 ├── index.php                   # Entry point — bootstraps RoutesManagement
+├── composer.json               # PHP constraint + lint/test scripts (no runtime deps)
+├── .env.example                # Sample DB env vars
 ├── README.md
 ├── CONTRIBUTING.md
 └── CHANGELOG.md
@@ -44,7 +46,7 @@ usocial-network/
 | CSS Framework | Bootstrap 3.3.7, Font Awesome 4.7.0 |
 | JavaScript | Vue.js 2.5.9, jQuery 1.11.2, Axios 0.12.0 |
 | Web Server | Apache, Nginx, or PHP built-in server |
-| Package Manager | None — no Composer, no npm |
+| Package Manager | Composer (`composer.json` defines `lint`/`test` scripts only — no runtime PHP deps); no npm |
 
 ## Build, Test, Lint, and Run Commands
 
@@ -60,12 +62,20 @@ Then open `http://localhost:8000` in a browser.
 
 ### Lint (syntax check all PHP files)
 
+CI runs `composer lint`, which lints every `*.php` file outside `vendor/`:
+
+```bash
+composer lint   # find . -name '*.php' -not -path './vendor/*' | xargs -n1 php -l
+```
+
+Equivalent without Composer:
+
 ```bash
 php -l index.php
 find app core -name "*.php" -exec php -l {} \;
 ```
 
-This is the same check run in CI. Expect near-instant results for each file.
+`composer test` is a placeholder (`exit 0`) — there is no test suite.
 
 ### Database setup
 
@@ -89,7 +99,7 @@ Database credentials are configured via environment variables with fallback defa
 
 ## Dependencies
 
-All dependencies are bundled in the repository — there is no package manager to run.
+There are no runtime dependencies to install. `composer.json` declares only the PHP `>=7.2` constraint and `lint`/`test` scripts; frontend libraries are committed in `resources/plugins/`.
 
 **PHP**: Built-in PDO with `pdo_mysql` driver (must be enabled in `php.ini`).
 
@@ -110,7 +120,7 @@ Triggers:
 - Pull requests targeting `main`
 - Manual `workflow_dispatch`
 
-The pipeline runs PHP linting on all source files. Tagged commits produce a GitHub Release.
+The pipeline runs the `composer.json` scripts (`composer lint` for PHP syntax checking). Tagged commits produce a GitHub Release.
 
 ## Development Workflow
 
@@ -118,7 +128,7 @@ The pipeline runs PHP linting on all source files. Tagged commits produce a GitH
 2. Create a feature branch: `git checkout -b feat/my-feature`
 3. Make your changes.
 4. Verify locally: run `php -S localhost:8000` and confirm the app works in a browser.
-5. Run the linter: `find app core -name "*.php" -exec php -l {} \;`
+5. Run the linter: `composer lint`
 6. Commit following the [commit conventions](https://github.com/rios0rios0/guide/wiki/Life-Cycle/Git-Flow) (e.g. `feat:`, `fix:`, `chore:`).
 7. Open a pull request targeting `main`.
 
