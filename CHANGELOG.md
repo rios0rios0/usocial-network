@@ -16,6 +16,8 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-06-01
+
 ### Changed
 
 - refreshed `CLAUDE.md` and `.github/copilot-instructions.md` to reflect that `composer.json` exists with `lint`/`test` scripts (CI runs `composer lint`), correcting the stale "no Composer" claim, and to reference `.env.example`
