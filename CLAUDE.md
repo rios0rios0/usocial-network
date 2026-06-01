@@ -4,16 +4,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Build & Run
 
-No build step, no package manager (no Composer, no npm). All dependencies are bundled.
+No build step. `composer.json` declares only the PHP `>=7.2` constraint plus `lint`/`test` scripts — there are no runtime PHP dependencies to install and no npm. Frontend libraries are bundled in `resources/plugins/`.
 
 ```bash
 # Dev server
 php -S localhost:8000
 
-# Lint (same as CI)
+# Lint (CI runs `composer lint`)
+composer lint   # find . -name '*.php' -not -path './vendor/*' | xargs -n1 php -l
+
+# Or directly, without Composer:
 php -l index.php
 find app core -name "*.php" -exec php -l {} \;
 ```
+
+`composer test` is a placeholder (`exit 0`) — there is no test suite.
 
 ## Database
 
@@ -24,7 +29,7 @@ mysql -u root -p usocial < db/2019051801_usocial.sql
 mysql -u root -p usocial < db/2019051802_usocial.sql
 ```
 
-Credentials via env vars (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) with defaults in `core/db/DatabaseConnection.php`.
+Credentials via env vars (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) with defaults in `core/db/DatabaseConnection.php`; see `.env.example`.
 
 ## Architecture
 
@@ -45,4 +50,4 @@ MVC with service layer. Entry point: `index.php` → `RoutesManagement`.
 
 ## CI
 
-`.github/workflows/default.yaml` delegates to `rios0rios0/pipelines/.github/workflows/composer-library.yaml@main`. Runs PHP linting; tagged commits produce a GitHub Release.
+`.github/workflows/default.yaml` delegates to `rios0rios0/pipelines/.github/workflows/composer-library.yaml@main`, which runs the `composer.json` scripts (`composer lint` for PHP syntax checking). Tagged commits produce a GitHub Release.
