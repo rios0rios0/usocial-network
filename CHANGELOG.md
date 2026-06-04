@@ -22,6 +22,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 - refreshed `CLAUDE.md` and `.github/copilot-instructions.md` to reflect that `composer.json` exists with `lint`/`test` scripts (CI runs `composer lint`), correcting the stale "no Composer" claim, and to reference `.env.example`
 
+### Security
+
+- added `composer.lock` (zero packages, only `php: >=7.2` platform constraint) so the `sca:composer-audit` CI step has a lockfile to inspect; the project has no PHP package dependencies and no security advisories apply
+
 ## [0.2.1] - 2026-05-25
 
 ### Changed
