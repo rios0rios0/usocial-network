@@ -33,12 +33,12 @@ Credentials via env vars (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) with d
 
 ## Architecture
 
-MVC with service layer. Entry point: `index.php` → `RoutesManagement`.
+MVC with service layer. Entry point: `index.php` → `RoutesManagement`. Routing is filesystem-based: a URL maps directly to a controller file path (e.g. `app/controllers/user/list.php`, linked via `RoutesManagement::base_url()`) — there is no central route table.
 
-- **Controllers** (`app/controllers/`): thin request handlers, organized by feature subdirectory.
-- **Services** (`app/services/`): `UserService`, `PostService` — all business logic and DB interaction.
+- **Controllers** (`app/controllers/`): thin, procedural request-handler scripts (no base class), organized by feature subdirectory.
+- **Services** (`app/services/`): `UserService`, `PostService` — most business logic and DB interaction.
 - **Views** (`app/views/`): PHP templates rendered by `ViewsManagement`.
-- **Core** (`core/`): framework singletons — `DatabaseConnection`, `SessionManagement`, `RoutesManagement`, `ViewsManagement`.
+- **Core** (`core/`): framework classes — `DatabaseConnection` and `SessionManagement` are singletons (`getInstance()`); `RoutesManagement` is static-only (`redirect()`, `base_url()`); `ViewsManagement` is instantiated per render.
 
 ## Conventions
 

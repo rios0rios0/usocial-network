@@ -17,7 +17,7 @@ usocial-network/
 │   └── views/                  # PHP templates: login, home, user views, layouts, fragments
 ├── core/                       # Core framework components
 │   ├── db/                     # DatabaseConnection singleton (PDO + MySQL)
-│   ├── routes/                 # RoutesManagement: URL dispatch and base URL helpers
+│   ├── routes/                 # RoutesManagement: redirect + base-URL helpers (routing is filesystem-based)
 │   ├── session/                # SessionManagement singleton
 │   └── views/                  # ViewsManagement: template rendering engine
 ├── db/                         # SQL migration scripts (run in order)
@@ -93,7 +93,7 @@ Database credentials are configured via environment variables with fallback defa
 - **MVC**: Controllers in `app/controllers/` handle HTTP requests; services in `app/services/` contain business logic; templates in `app/views/` render HTML.
 - **Service Layer**: `UserService` and `PostService` encapsulate database interactions and domain logic, keeping controllers thin.
 - **Singleton**: `DatabaseConnection::getInstance()` and `SessionManagement::getInstance()` ensure a single shared instance per request.
-- **Central Router**: `RoutesManagement` in `core/routes/` dispatches URLs to the correct controller.
+- **Filesystem routing**: there is no central dispatcher or route table. A URL maps directly to a controller file path (e.g. `app/controllers/user/list.php`); `RoutesManagement` only provides `redirect()` and `base_url()` helpers. Controllers are procedural scripts, not classes.
 - **Template Rendering**: `ViewsManagement` in `core/views/` loads PHP view files and passes data to them.
 - **PDO Prepared Statements**: Database queries use PDO with prepared statements to parameterise user input.
 
@@ -145,10 +145,10 @@ The pipeline runs the `composer.json` scripts (`composer lint` for PHP syntax ch
 
 ### Add a new page/route
 
-1. Create a controller in `app/controllers/` extending the base controller pattern.
-2. Register the route in `core/routes/RoutesManagement.php`.
-3. Create the corresponding view template in `app/views/`.
-4. Add any business logic to a service in `app/services/`.
+1. Create a procedural controller script in the matching `app/controllers/` subdirectory (no base class) — it is reached directly by its file path (e.g. `app/controllers/user/list.php`); no route registration is needed.
+2. Link to it from a view with `<?= RoutesManagement::base_url() ?>app/controllers/...`.
+3. Create the corresponding view template in `app/views/` and render it via `ViewsManagement`.
+4. Put business logic and DB access in a service in `app/services/`.
 
 ### Add a database migration
 
