@@ -16,6 +16,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Changed
+
+- corrected the routing model in `CLAUDE.md` and `.github/copilot-instructions.md`: routing is filesystem-based (a URL maps directly to a controller file path), controllers are procedural scripts with no base class, and `RoutesManagement` only provides `redirect()`/`base_url()` rather than dispatching routes; also fixed `CLAUDE.md` to stop labeling all four `core/` classes as singletons (only `DatabaseConnection` and `SessionManagement` use `getInstance()`)
+
 ## [0.2.2] - 2026-06-03
 
 ### Changed
