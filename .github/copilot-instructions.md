@@ -30,6 +30,7 @@ usocial-network/
 │   └── styles/
 ├── index.php                   # Entry point — bootstraps RoutesManagement
 ├── composer.json               # PHP constraint + lint/test scripts (no runtime deps)
+├── composer.lock               # committed (empty package set) to enable the CI composer-audit step
 ├── .env.example                # Sample DB env vars
 ├── README.md
 ├── CONTRIBUTING.md
@@ -120,7 +121,7 @@ Triggers:
 - Pull requests targeting `main`
 - Manual `workflow_dispatch`
 
-The pipeline runs the `composer.json` scripts (`composer lint` for PHP syntax checking). Tagged commits produce a GitHub Release.
+Beyond `composer lint` (PHP syntax checking) the pipeline runs security scanning: an SCA `composer-audit` step (`composer.lock` is committed with an empty package set solely to enable it) and semgrep SAST (`.semgrepignore` excludes `resources/plugins/`). Tagged commits produce a GitHub Release.
 
 ## Development Workflow
 
