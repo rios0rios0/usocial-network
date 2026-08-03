@@ -50,4 +50,4 @@ MVC with service layer. Entry point: `index.php` → `RoutesManagement`. Routing
 
 ## CI
 
-`.github/workflows/default.yaml` delegates to `rios0rios0/pipelines/.github/workflows/composer-library.yaml@main`, which runs the `composer.json` scripts (`composer lint` for PHP syntax checking). Tagged commits produce a GitHub Release.
+`.github/workflows/default.yaml` delegates to `rios0rios0/pipelines/.github/workflows/composer-library.yaml@main`. Beyond `composer lint` (PHP syntax checking) it runs security scanning: an SCA `composer-audit` step — `composer.lock` is committed (with an empty package set) solely to enable that audit — and semgrep SAST (`.semgrepignore` excludes `resources/plugins/`). Tagged commits produce a GitHub Release.

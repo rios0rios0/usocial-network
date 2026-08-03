@@ -16,6 +16,10 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+### Changed
+
+- refreshed `CLAUDE.md` and `.github/copilot-instructions.md` to document that the CI pipeline runs security scanning beyond `composer lint` — an SCA `composer-audit` step (which is why the empty `composer.lock` is committed) and semgrep SAST (`.semgrepignore`)
+
 ## [0.2.3] - 2026-06-09
 
 ### Changed
