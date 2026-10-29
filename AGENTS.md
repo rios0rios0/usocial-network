@@ -1,42 +1,44 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Claude Code, Codex, Cursor, GitHub Copilot) when working with code in this repository.
 
 ## Build & Run
 
 No build step. `composer.json` declares only the PHP `>=7.2` constraint plus `lint`/`test` scripts — there are no runtime PHP dependencies to install and no npm. Frontend libraries are bundled in `resources/plugins/`.
 
 ```bash
-# Dev server
-php -S localhost:8000
+# Dev server: run from the PARENT of a checkout named exactly `USocial-Network`, on port 80,
+# then open http://localhost/USocial-Network/ (port 80 may need elevated privileges)
+php -S localhost:80
 
 # Lint (CI runs `composer lint`)
-composer lint   # find . -name '*.php' -not -path './vendor/*' | xargs -n1 php -l
+composer lint   # php -l on every non-vendor .php file (script in composer.json)
 
 # Or directly, without Composer:
 php -l index.php
 find app core -name "*.php" -exec php -l {} \;
 ```
 
+`RoutesManagement::$app` hardcodes the base path `/USocial-Network`: `ViewsManagement` resolves views from `DOCUMENT_ROOT . '/USocial-Network'`, and `base_url()` (used for every asset and link) omits the port. `php -S localhost:8000` from the repo root redirects to a 404.
+
 `composer test` is a placeholder (`exit 0`) — there is no test suite.
 
 ## Database
 
-MySQL via PDO. Apply migrations in order:
+MySQL via PDO. Each `db/*.sql` file is a full `mysqldump` snapshot (MySQL 5.7), not an incremental migration: it creates `usocial` if missing, then drops and recreates every table with seed rows, so loading one replaces all existing data. Load the newest, without a database argument:
 
 ```bash
-mysql -u root -p usocial < db/2019051801_usocial.sql
-mysql -u root -p usocial < db/2019051802_usocial.sql
+mysql -u root -p < db/2019051802_usocial.sql
 ```
 
-Credentials via env vars (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`) with defaults in `core/db/DatabaseConnection.php`; see `.env.example`.
+Credentials come from the server process's env vars (`DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`), falling back to defaults in `core/db/DatabaseConnection.php`. Nothing loads a `.env` file; `.env.example` only lists the names, so export them before starting the server.
 
 ## Architecture
 
 MVC with service layer. Entry point: `index.php` → `RoutesManagement`. Routing is filesystem-based: a URL maps directly to a controller file path (e.g. `app/controllers/user/list.php`, linked via `RoutesManagement::base_url()`) — there is no central route table.
 
-- **Controllers** (`app/controllers/`): thin, procedural request-handler scripts (no base class), organized by feature subdirectory.
-- **Services** (`app/services/`): `UserService`, `PostService` — most business logic and DB interaction.
+- **Controllers** (`app/controllers/`): procedural request-handler scripts (no base class), organized by feature subdirectory; each is its own entry point. Every write (sign-up, post insert/like/comment/delete, friendship changes, photo update) and the login query call PDO directly in the controller.
+- **Services** (`app/services/`): `UserService`, `PostService` — the read queries (user listings, timeline, posts, comments). Put new logic here rather than in controllers.
 - **Views** (`app/views/`): PHP templates rendered by `ViewsManagement`.
 - **Core** (`core/`): framework classes — `DatabaseConnection` and `SessionManagement` are singletons (`getInstance()`); `RoutesManagement` is static-only (`redirect()`, `base_url()`); `ViewsManagement` is instantiated per render.
 
@@ -45,7 +47,7 @@ MVC with service layer. Entry point: `index.php` → `RoutesManagement`. Routing
 - PHP 7.2+ features: object type hints, return type declarations, abstract method overrides.
 - All DB queries use PDO prepared statements — never interpolate user input into SQL.
 - Frontend assets in `resources/`; vendor libraries committed in `resources/plugins/`.
-- Commit messages follow [these conventions](https://github.com/rios0rios0/guide/wiki/Life-Cycle/Git-Flow) (e.g. `feat:`, `fix:`, `chore:`).
+- Commit messages follow [these conventions](https://github.com/rios0rios0/guide/wiki/Git-Flow): `type(SCOPE): message` in simple past tense (e.g. `chore(bump): bumped version to 0.4.1`).
 - `CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/).
 
 ## CI

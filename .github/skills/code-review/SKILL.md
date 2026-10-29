@@ -20,7 +20,7 @@ The canonical engineering standards live in the
 repo-tailored index into that guide plus the rules that only apply here. Precedence, highest
 first:
 
-1. This repository's `.github/copilot-instructions.md`, `CLAUDE.md`, and `CONTRIBUTING.md` —
+1. This repository's `AGENTS.md`, `.github/copilot-instructions.md`, and `CONTRIBUTING.md` —
    they describe *this* codebase and its load-bearing invariants.
 2. The **rios0rios0/guide** wiki — the shared standard.
 3. General language idiom.
@@ -66,7 +66,7 @@ guide disagree, the guide wins and this file should be corrected in the same pul
 These are the checks that catch real defects in this repository. Work through
 them before the generic ones.
 
-- **Every query is parameterised.** `core/db/DatabaseConnection.php` gives a PDO handle; a value concatenated into SQL anywhere in `app/services/` is a **Critical** SQL-injection finding, no exceptions.
+- **Every query is parameterised.** `core/db/DatabaseConnection.php` gives a PDO handle; a value concatenated into SQL anywhere in `app/services/` or `app/controllers/` (every write and the login query call PDO directly in their controllers) is a **Critical** SQL-injection finding, no exceptions.
 - **Every value echoed into a template is escaped.** Views under `app/views/` render user-supplied content — `htmlspecialchars` (or an equivalent helper) on output, always. An unescaped echo of a post body or a user name is a **Critical** XSS finding.
 - **Passwords use `password_hash`/`password_verify`.** Anything reversible, or any comparison with `==`, is a Critical finding.
 - **Session handling goes through `SessionManagement`.** Check that login regenerates the session id, that logout destroys it, and that no controller trusts a client-set value for identity.
@@ -80,9 +80,9 @@ them before the generic ones.
 ### Commands a reviewer should be able to quote
 
 ```bash
-php -S localhost:8000
+php -S localhost:80    # from the parent of a checkout named USocial-Network
 composer lint          # php -l over every non-vendor .php file
-mysql -u root -p usocial < db/2019051801_usocial.sql
+mysql -u root -p < db/2019051802_usocial.sql   # full dump: recreates every table
 ```
 
 ## Architecture and layering
@@ -142,8 +142,9 @@ hand.
 - Fragment bodies start with a lowercase verb in simple past tense, capitalise proper nouns
   (GitHub, Go, Docker), and wrap code identifiers and versions in backticks.
 - `README.md` is updated whenever usage, setup, configuration, or architecture changes;
-  `.github/copilot-instructions.md` and `CLAUDE.md` whenever the workflow, commands, or
-  structure changes. Documentation and code ship in one commit.
+  `AGENTS.md` and `.github/copilot-instructions.md` whenever the workflow, commands, or
+  structure changes (`CLAUDE.md` holds only `@AGENTS.md`). Documentation and code ship in
+  one commit.
 
 ## Git Flow and pull-request hygiene
 
@@ -206,7 +207,7 @@ A review that raises noise gets ignored. Do not report these:
 ### Change-control checklist
 - [ ] Changelog entry present for every behavioural change
 - [ ] `README.md` updated if usage, setup, or architecture changed
-- [ ] `.github/copilot-instructions.md` and `CLAUDE.md` updated if the workflow, commands, or structure changed
+- [ ] `AGENTS.md` and `.github/copilot-instructions.md` updated if the workflow, commands, or structure changed
 - [ ] Commit messages follow `type(SCOPE): message` in simple past tense
 - [ ] Breaking changes flagged in the commit footer, the changelog, and the PR description
 
