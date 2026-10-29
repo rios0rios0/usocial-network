@@ -8,9 +8,14 @@ USocial Network is a social networking application built with PHP 7.2+. It demon
 
 ```
 usocial-network/
+├── .changes/unreleased/        # chlog fragments (CHANGELOG.md is generated from these)
 ├── .github/
+│   ├── skills/code-review/     # Repo-specific code-review skill
 │   └── workflows/
-│       └── default.yaml        # CI/CD pipeline (delegates to shared composer-library.yaml workflow)
+│       ├── default.yaml        # CI/CD pipeline (delegates to shared composer-library.yaml workflow)
+│       ├── claude-review.yaml  # PR review via a shared reusable workflow
+│       └── claude-mention.yaml # Mention-triggered assistant via a shared reusable workflow
+├── AGENTS.md                   # Shared agent instructions (CLAUDE.md only imports it)
 ├── app/                        # Application layer (MVC)
 │   ├── controllers/            # Request handlers in subdirectories: home/, login/, post/, user/
 │   ├── services/               # Business logic: UserService, PostService
@@ -20,7 +25,7 @@ usocial-network/
 │   ├── routes/                 # RoutesManagement: redirect + base-URL helpers (routing is filesystem-based)
 │   ├── session/                # SessionManagement singleton
 │   └── views/                  # ViewsManagement: template rendering engine
-├── db/                         # SQL migration scripts (run in order)
+├── db/                         # Full mysqldump snapshots (schema + seed data)
 │   ├── 2019051801_usocial.sql
 │   └── 2019051802_usocial.sql
 ├── resources/                  # Frontend static assets
@@ -55,18 +60,20 @@ There is no build step. The project runs directly with PHP.
 
 ### Start the development server
 
+`RoutesManagement::$app` hardcodes the base path `/USocial-Network`, `ViewsManagement` resolves views from `DOCUMENT_ROOT . '/USocial-Network'`, and `base_url()` omits the port. Serve the parent directory of a checkout named exactly `USocial-Network`, on port 80 (may need elevated privileges):
+
 ```bash
-php -S localhost:8000
+cd .. && php -S localhost:80
 ```
 
-Then open `http://localhost:8000` in a browser.
+Then open `http://localhost/USocial-Network/` in a browser. `php -S localhost:8000` from the repo root redirects to a 404.
 
 ### Lint (syntax check all PHP files)
 
 CI runs `composer lint`, which lints every `*.php` file outside `vendor/`:
 
 ```bash
-composer lint   # find . -name '*.php' -not -path './vendor/*' | xargs -n1 php -l
+composer lint   # php -l on every non-vendor .php file (script in composer.json)
 ```
 
 Equivalent without Composer:
@@ -80,19 +87,18 @@ find app core -name "*.php" -exec php -l {} \;
 
 ### Database setup
 
-Apply the SQL migrations in order against a local MySQL instance:
+Each `db/*.sql` file is a full `mysqldump` snapshot (MySQL 5.7): it creates `usocial` if missing, then drops and recreates every table with seed rows, so loading one replaces all existing data. Load the newest against a local MySQL instance:
 
 ```bash
-mysql -u root -p usocial < db/2019051801_usocial.sql
-mysql -u root -p usocial < db/2019051802_usocial.sql
+mysql -u root -p < db/2019051802_usocial.sql
 ```
 
-Database credentials are configured via environment variables with fallback defaults in `core/db/DatabaseConnection.php`: `DB_HOST` (default `localhost`), `DB_USER` (default `root`), `DB_PASSWORD` (default empty), `DB_NAME` (default `usocial`). Set these env vars or edit the file for local development.
+Database credentials are read with `getenv` from the server process's environment, with fallback defaults in `core/db/DatabaseConnection.php`: `DB_HOST` (default `localhost`), `DB_USER` (default `root`), `DB_PASSWORD` (default empty), `DB_NAME` (default `usocial`). Nothing loads a `.env` file — `.env.example` only lists the names — so export the variables before starting the server, or edit the file for local development.
 
 ## Architecture and Design Patterns
 
 - **MVC**: Controllers in `app/controllers/` handle HTTP requests; services in `app/services/` contain business logic; templates in `app/views/` render HTML.
-- **Service Layer**: `UserService` and `PostService` encapsulate database interactions and domain logic, keeping controllers thin.
+- **Service Layer**: `UserService` and `PostService` hold the read queries (listings, timeline, posts, comments); write actions and the login query still call PDO directly from their controllers. Put new logic in a service (see Coding Conventions).
 - **Singleton**: `DatabaseConnection::getInstance()` and `SessionManagement::getInstance()` ensure a single shared instance per request.
 - **Filesystem routing**: there is no central dispatcher or route table. A URL maps directly to a controller file path (e.g. `app/controllers/user/list.php`); `RoutesManagement` only provides `redirect()` and `base_url()` helpers. Controllers are procedural scripts, not classes.
 - **Template Rendering**: `ViewsManagement` in `core/views/` loads PHP view files and passes data to them.
@@ -128,9 +134,9 @@ Beyond `composer lint` (PHP syntax checking) the pipeline runs security scanning
 1. Fork the repository and clone your fork.
 2. Create a feature branch: `git checkout -b feat/my-feature`
 3. Make your changes.
-4. Verify locally: run `php -S localhost:8000` and confirm the app works in a browser.
+4. Verify locally: start the development server (see above) and confirm the app works in a browser.
 5. Run the linter: `composer lint`
-6. Commit following the [commit conventions](https://github.com/rios0rios0/guide/wiki/Life-Cycle/Git-Flow) (e.g. `feat:`, `fix:`, `chore:`).
+6. Commit following the [commit conventions](https://github.com/rios0rios0/guide/wiki/Git-Flow): `type(SCOPE): message` in simple past tense (e.g. `chore(bump): bumped version to 0.4.1`).
 7. Open a pull request targeting `main`.
 
 ## Coding Conventions
@@ -154,13 +160,13 @@ Beyond `composer lint` (PHP syntax checking) the pipeline runs security scanning
 ### Add a database migration
 
 1. Create a new `.sql` file in `db/` with the next sequential timestamp prefix (e.g. `2019051803_usocial.sql`).
-2. Write idempotent SQL (use `CREATE TABLE IF NOT EXISTS`, `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, etc.).
+2. Write re-runnable SQL where MySQL allows it (`CREATE TABLE IF NOT EXISTS`); MySQL has no `ADD COLUMN IF NOT EXISTS` (that is MariaDB syntax).
 3. Apply it locally: `mysql -u root -p usocial < db/<filename>.sql`.
 
 ### Troubleshooting
 
-- **Blank page / 500 error**: Enable PHP error display (`error_reporting(E_ALL); ini_set('display_errors', 1);` at the top of `index.php`) to see the actual error.
-- **Database connection failure**: Check credentials in `core/db/DatabaseConnection.php` and confirm MySQL is running with the `usocial` database created.
+- **Blank page / 500 error**: Enable PHP error display (`error_reporting(E_ALL); ini_set('display_errors', 1);`) at the top of the controller script you are requesting — each controller is its own entry point; `index.php` only redirects — or start the server with `php -d display_errors=1 -S …`.
+- **Database connection failure**: Check the `DB_*` env vars the server process sees (fallback defaults are in `core/db/DatabaseConnection.php`) and confirm MySQL is running with the `usocial` database created.
 - **`pdo_mysql` not found**: Enable the extension in `php.ini` (`extension=pdo_mysql`) and restart the server.
 - **Assets not loading**: Verify the base URL generated by `RoutesManagement` matches the address you are accessing (important when running behind a proxy or on a non-root path).
 

@@ -19,15 +19,15 @@ An unknown social network application built with PHP **7.2**, leveraging modern 
 ## Installation
 
 ```bash
-git clone https://github.com/rios0rios0/usocial-network.git
-cd usocial-network
+git clone https://github.com/rios0rios0/usocial-network.git USocial-Network
+mysql -u root -p < USocial-Network/db/2019051802_usocial.sql
 ```
 
-Configure your web server (Apache/Nginx) to serve the project directory and set up the required database.
+The application hardcodes its base path as `/USocial-Network` and builds URLs without a port. Clone it into a directory with exactly that name, then configure your web server (Apache/Nginx) to serve the checkout's **parent** directory on port 80. The SQL file is a full dump: it creates the `usocial` database and replaces every table with seed data. Database credentials come from the `DB_HOST`, `DB_USER`, `DB_PASSWORD`, and `DB_NAME` environment variables (see `.env.example`).
 
 ## Usage
 
-Access the application through your configured web server URL to register an account and start using the social network features.
+Open `http://localhost/USocial-Network/` (or your server's equivalent) to register an account and start using the social network features.
 
 ## Contributing
 

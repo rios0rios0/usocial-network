@@ -1,0 +1,3 @@
+kind: 'Changed'
+body: 'corrected the dev-server, database-setup, and architecture guidance in `AGENTS.md`, `.github/copilot-instructions.md`, the code-review skill, `README.md`, and `CONTRIBUTING.md` to match the hardcoded `/USocial-Network` base path and the full-dump `db/` files'
+time: '2026-10-29T01:13:22.455258658Z'
