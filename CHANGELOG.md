@@ -22,6 +22,13 @@ Exceptions are acceptable depending on the circumstances (critical bug fixes tha
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-11-04
+
+### Changed
+
+- corrected the dev-server, database-setup, and architecture guidance in `AGENTS.md`, `.github/copilot-instructions.md`, the code-review skill, `README.md`, and `CONTRIBUTING.md` to match the hardcoded `/USocial-Network` base path and the full-dump `db/` files
+- moved the agent instructions from `CLAUDE.md` to `AGENTS.md`, keeping a `CLAUDE.md` that imports it
+
 ## [0.4.1] - 2026-09-08
 
 ### Changed
